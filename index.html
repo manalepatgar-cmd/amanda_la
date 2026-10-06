@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Amanda's Ultra Nursing Lab 🌸🩺</title>
+  <title>Amanda's Nursing Lab 🌸🩺</title>
   
   <!-- Librerías de lectura de archivos incorporadas -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
@@ -73,7 +73,7 @@
       border: 2px dashed var(--primary);
       background: var(--primary-soft);
       border-radius: 16px;
-      padding: 2rem;
+      padding: 1.8rem;
       text-align: center;
       cursor: pointer;
       margin-bottom: 1.2rem;
@@ -82,7 +82,7 @@
     .file-dropzone:hover { background: var(--accent-soft); border-color: var(--accent); }
 
     label { font-weight: 700; display: block; margin-bottom: 0.4rem; font-size: 0.95rem; color: var(--text); }
-    textarea, select, input[type="file"] {
+    input[type="password"], textarea, select {
       width: 100%;
       padding: 0.85rem;
       border: 2px solid var(--border);
@@ -191,50 +191,46 @@
   <div class="container">
     <div class="card" id="setup-panel">
       <h3 style="margin-bottom: 0.5rem; color: var(--primary-hover);">¡Hola Amanda! 💕✨</h3>
-      <p style="font-size: 0.9rem; color: #885b7b; margin-bottom: 1.2rem;">Sube tus PDFs, presentaciones en PowerPoint (PPTX), Word (DOCX) o pega el texto para analizarlo inmediatamente.</p>
+      <p style="font-size: 0.9rem; color: #885b7b; margin-bottom: 1.2rem;">Pega tu clave de Google, sube tus diapositivas o PDF para analizar la información real con IA.</p>
       
+      <!-- CAMPO EXPLÍCITO PARA LA API KEY -->
+      <label>🔑 Clave de Acceso (API Key de Google):</label>
+      <input type="password" id="api-key" placeholder="Pega aquí tu clave (AQ.Ab8... o AIzaSy...)">
+
       <div class="file-dropzone" onclick="document.getElementById('file-input').click()">
         <p style="font-size: 1.8rem; margin-bottom: 0.4rem;">📁</p>
-        <p style="font-weight: 700; color: var(--primary-hover);">Haz clic para subir tu documento (PDF, PPTX, DOCX)</p>
+        <p style="font-weight: 700; color: var(--primary-hover);">Haz clic para cargar tu archivo (PDF, PPTX, DOCX)</p>
         <p style="font-size: 0.8rem; color: #885b7b; margin-top: 0.3rem;" id="file-name-display">Ningún archivo seleccionado</p>
         <input type="file" id="file-input" accept=".pdf,.pptx,.docx,.txt" style="display:none;" onchange="handleFileSelect(event)">
       </div>
 
-      <label>O pega directamente el texto / notas aquí:</label>
-      <textarea id="study-text" rows="6" placeholder="Pega el contenido o deja que el archivo subido llene este campo automáticamente..."></textarea>
+      <label>O pega directamente el texto de la clase:</label>
+      <textarea id="study-text" rows="6" placeholder="Ejemplo: Pega aquí las diapositivas de Anatomía del Aparato Digestivo..."></textarea>
 
-      <label>Cantidad de Tarjetas y Preguntas para el Examen:</label>
+      <label>Cantidad de Elementos a Generar:</label>
       <select id="item-count">
-        <option value="20" selected>20 Tarjetas y 20 Preguntas (Repaso Rápido)</option>
-        <option value="30">30 Tarjetas y 30 Preguntas (Examen Estándar)</option>
-        <option value="40">40 Tarjetas y 40 Preguntas (Examen Avanzado)</option>
+        <option value="10">10 Tarjetas y 10 Preguntas (Repaso Rápido)</option>
+        <option value="20" selected>20 Tarjetas y 20 Preguntas (Recomendado)</option>
+        <option value="30">30 Tarjetas y 30 Preguntas</option>
         <option value="50">50 Tarjetas y 50 Preguntas (Examen Completo)</option>
-        <option value="70">🔥 70 Tarjetas y 70 Preguntas (Modo Intensivo Pro)</option>
+        <option value="70">🔥 70 Tarjetas y 70 Preguntas (Modo Pro)</option>
       </select>
 
-      <button class="btn-main" onclick="processAndGenerate()">🚀 Analizar Documento y Generar Repaso</button>
+      <button class="btn-main" onclick="processAndGenerate()">🚀 Generar Repaso Médico con IA</button>
     </div>
 
     <div class="loader" id="loader">
-      🧬 Leyendo y analizando el contenido con IA clínica... preparando las tarjetas, resumen y quiz para Amanda... 💖
+      🧬 Analizando la presentación con IA médica... extrayendo capas, medidas, funciones y redactando el examen para Amanda... 💖
     </div>
 
     <div id="study-panel" style="display: none;">
       <nav>
-        <button class="nav-btn active" onclick="switchTab('resumen', this)">📄 Resumen Ejecutivo</button>
-        <button class="nav-btn" onclick="switchTab('recorrido', this)">📖 Recorrido</button>
+        <button class="nav-btn active" onclick="switchTab('recorrido', this)">📖 Recorrido</button>
         <button class="nav-btn" onclick="switchTab('tarjetas', this)">🎴 Flashcards</button>
         <button class="nav-btn" onclick="switchTab('quiz', this)">📝 Quiz Evaluativo</button>
       </nav>
 
-      <div id="resumen" class="tab-content active">
-        <div class="card">
-          <h3 style="color:var(--primary-hover); margin-bottom:0.8rem;">💡 Resumen de Puntos Clave de Enfermería</h3>
-          <div id="summary-content" style="line-height:1.6; font-size:0.98rem;"></div>
-        </div>
-      </div>
-
-      <div id="recorrido" class="tab-content"></div>
+      <div id="recorrido" class="tab-content active"></div>
 
       <div id="tarjetas" class="tab-content">
         <div style="text-align: right; margin-bottom: 0.5rem; font-size: 0.85rem; font-weight: bold; color: var(--primary-hover);" id="card-count"></div>
@@ -271,6 +267,12 @@
     let isFlipped = false;
     let quizIdx = 0;
     let score = 0;
+
+    // Recuperar clave previa guardada
+    window.onload = () => {
+      const savedKey = localStorage.getItem('amanda_api_key');
+      if (savedKey) document.getElementById('api-key').value = savedKey;
+    };
 
     function toggleTheme() {
       const isDark = document.body.getAttribute('data-theme') === 'dark';
@@ -324,87 +326,97 @@
           document.getElementById('study-text').value = text;
         }
       } catch (err) {
-        alert("Ocurrió un detalle al leer el archivo. Intenta copiando y pegando el texto directamente.");
+        alert("Atención al leer el archivo: Te recomendamos copiar y pegar el texto de la presentación en la casilla.");
       }
     }
 
-    function processAndGenerate() {
+    async function processAndGenerate() {
+      const apiKey = document.getElementById('api-key').value.trim();
       const text = document.getElementById('study-text').value.trim();
       const count = parseInt(document.getElementById('item-count').value);
 
-      if (!text || text.length < 20) {
-        alert("Por favor Amanda, sube un documento válido o pega un texto más completo 💕");
+      if (!apiKey) {
+        alert("Por favor ingresa tu API Key en la casilla correspondiente.");
         return;
       }
+      if (!text || text.length < 20) {
+        alert("Por favor Amanda, sube un archivo o pega el texto de la clase 💕");
+        return;
+      }
+
+      localStorage.setItem('amanda_api_key', apiKey);
 
       document.getElementById('setup-panel').style.display = 'none';
       document.getElementById('loader').style.display = 'block';
 
-      setTimeout(() => {
-        const sentences = text.split(/[.!?\n]+/).map(s => s.trim()).filter(s => s.length > 15);
-        
-        let summary = "<b>Mapeo conceptual del documento:</b><br><br>";
-        sentences.slice(0, 5).forEach((s, i) => {
-          summary += `• <b>Punto Clave ${i+1}:</b> ${s}.<br>`;
+      const prompt = `Actúa como un profesor universitario experto en Anatomía, Fisiología y Enfermería. Analiza el siguiente texto y genera una respuesta estrictamente en JSON válido.
+
+Genera exactamente ${count} temas de recorrido, ${count} flashcards y ${count} preguntas de examen con datos reales (nombres anatómicos, números, funciones, capas, irrigación, etc.). No repitas títulos.
+
+FORMATO JSON:
+{
+  "recorrido": [
+    {"tema": "Título de sección anatómica/clínica real", "detalles": "Explicación médica profunda y detallada.", "datoClave": "Dato clave del examen."}
+  ],
+  "flashcards": [
+    {"pregunta": "Pregunta conceptual sobre un dato médico real", "respuesta": "Respuesta médica explicada."}
+  ],
+  "quiz": [
+    {
+      "pregunta": "Pregunta de examen de opción múltiple bien redactada sobre el tema.",
+      "opciones": ["Opción Correcta Real", "Distractor plausible 1", "Distractor plausible 2", "Distractor plausible 3"],
+      "correcta": 0,
+      "explicacion": "Explicación anatómica/clínica detallada."
+    }
+  ]
+}
+
+TEXTO A ANALIZAR:
+${text}`;
+
+      try {
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: prompt }] }],
+            generationConfig: { responseMimeType: "application/json" }
+          })
         });
 
-        let recorrido = [];
-        let flashcards = [];
-        let quiz = [];
-
-        for (let i = 0; i < count; i++) {
-          const srcText = sentences[i % sentences.length];
-          const words = srcText.split(' ');
-          const keyTerm = words.length > 3 ? words.slice(0, 3).join(' ') : `Concepto Clinico #${i+1}`;
-
-          recorrido.push({
-            tema: `Módulo ${i+1}: ${keyTerm}`,
-            detalles: srcText,
-            datoClave: `Revisión fundamental de enfermería para ${keyTerm}.`
-          });
-
-          flashcards.push({
-            pregunta: `¿Cuál es el principio fundamental que define: "${keyTerm}"?`,
-            respuesta: srcText
-          });
-
-          quiz.push({
-            pregunta: `Sobre el tema (${keyTerm}), ¿cuál de los siguientes enunciados refleja el parámetro correcto?`,
-            opciones: [
-              srcText,
-              `No corresponde a los protocolos habituales de atención para ${keyTerm}.`,
-              `Proceso secundario contraindicado en la valoración de enfermería.`,
-              `Parámetro irrelevante dentro del cuidado clínico.`
-            ].sort(() => Math.random() - 0.5),
-            correctaText: srcText,
-            explicacion: `De acuerdo al material de estudio: "${srcText}"`
-          });
+        if (!response.ok) {
+          throw new Error(`Error HTTP: ${response.status}`);
         }
 
-        quiz.forEach(q => {
-          q.correcta = q.opciones.indexOf(q.correctaText);
-        });
+        const data = await response.json();
+        let rawText = data.candidates[0].content.parts[0].text;
 
-        studyData = { summary, recorrido, flashcards, quiz };
+        rawText = rawText.replace(/```json/g, '').replace(/```/g, '').trim();
+        studyData = JSON.parse(rawText);
 
-        document.getElementById('summary-content').innerHTML = studyData.summary;
         renderRecorrido();
         initCards();
         initQuiz();
 
         document.getElementById('loader').style.display = 'none';
         document.getElementById('study-panel').style.display = 'block';
-      }, 1500);
+
+      } catch (err) {
+        console.error("Error al procesar:", err);
+        alert("Ocurrió un detalle con la clave API. Asegúrate de haberla copiado completa y vuelve a intentarlo.");
+        document.getElementById('loader').style.display = 'none';
+        document.getElementById('setup-panel').style.display = 'block';
+      }
     }
 
     function renderRecorrido() {
       const container = document.getElementById('recorrido');
       container.innerHTML = studyData.recorrido.map(item => `
         <div class="card">
-          <h4 style="color:var(--primary-hover); font-size:1.1rem;">${item.tema}</h4>
+          <h4 style="color:var(--primary-hover); font-size:1.15rem; margin-bottom:0.5rem;">${item.tema}</h4>
           <p style="margin: 0.6rem 0; font-size:0.95rem; line-height:1.5;">${item.detalles}</p>
-          <div style="background:var(--accent-soft); border-left: 4px solid var(--accent); padding:0.6rem; font-weight:700; font-size:0.9rem; border-radius:0 10px 10px 0; color:var(--text);">
-            💡 Dato Clave de Enfermería: ${item.datoClave}
+          <div style="background:var(--accent-soft); border-left: 4px solid var(--accent); padding:0.6rem; font-weight:700; font-size:0.9rem; border-radius:0 10px 10px 0; color:var(--text); margin-top:0.8rem;">
+            💡 Dato Clave para Examen: ${item.datoClave}
           </div>
         </div>
       `).join('');
@@ -448,8 +460,8 @@
       document.getElementById('quiz-exp').style.display = 'none';
       document.getElementById('next-quiz-btn').style.display = 'none';
 
-      const options = document.getElementById('quiz-options');
-      options.innerHTML = q.opciones.map((opt, i) => `
+      const optionsContainer = document.getElementById('quiz-options');
+      optionsContainer.innerHTML = q.opciones.map((opt, i) => `
         <button class="option-btn" onclick="selectOption(${i})">${opt}</button>
       `).join('');
     }
@@ -466,8 +478,10 @@
 
       if (idx === q.correcta) score++;
 
+      document.getElementById('quiz-score').innerText = `Puntos: ${score}`;
+
       const exp = document.getElementById('quiz-exp');
-      exp.innerText = `💡 Explicación clínica: ${q.explicacion}`;
+      exp.innerText = `💡 Explicación médica: ${q.explicacion}`;
       exp.style.display = 'block';
 
       document.getElementById('next-quiz-btn').style.display = 'block';
@@ -483,11 +497,11 @@
         let msg = "";
 
         if (percentage >= 90) {
-          msg = `🌟 ¡EXTRAORDINARIO, AMANDA! Puntuación: ${score}/${total} (${percentage}%). ¡Eres una futura enfermera brillante y dedicada! 💕✨`;
+          msg = `🌟 ¡EXCEPCIONAL, AMANDA! Puntuación: ${score}/${total} (${percentage}%). ¡Tienes un dominio increíble de la anatomía y enfermería! 💕✨`;
         } else if (percentage >= 70) {
-          msg = `👏 ¡MUY BIEN HECHO, AMANDA! Puntuación: ${score}/${total} (${percentage}%). ¡Sigue así, estás dominando la materia de gran forma! 💖🩺`;
+          msg = `👏 ¡EXCELENTE RESULTADO, AMANDA! Puntuación: ${score}/${total} (${percentage}%). ¡Muy buen trabajo, estás lista para el examen! 💖🩺`;
         } else {
-          msg = `💪 ¡BUEN ESFUERZO, AMANDA! Puntuación: ${score}/${total} (${percentage}%). ¡Un repaso extra a las flashcards y lo vas a dominar al 100%! 💕🌸`;
+          msg = `💪 ¡BUEN REPASO, AMANDA! Puntuación: ${score}/${total} (${percentage}%). ¡Revisa las flashcards un par de veces más y sacarás 10! 💕🌸`;
         }
 
         const box = document.getElementById('motivation-box');
