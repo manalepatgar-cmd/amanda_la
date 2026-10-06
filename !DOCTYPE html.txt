@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Amanda's Nursing Lab 🩺</title>
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #1e293b;
+      --primary: #0284c7;
+      --primary-hover: #0369a1;
+      --accent: #ec4899;
+      --success: #10b981;
+      --danger: #ef4444;
+      --border: #e2e8f0;
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    }
+
+    [data-theme="dark"] {
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --text: #f8fafc;
+      --border: #334155;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background-color: var(--bg); color: var(--text); padding-bottom: 40px; }
+
+    header {
+      background: var(--card-bg);
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: var(--shadow);
+    }
+
+    .brand { display: flex; align-items: center; gap: 10px; }
+    .brand h1 { font-size: 1.2rem; color: var(--primary); }
+    .badge { background: rgba(236, 72, 153, 0.1); color: var(--accent); padding: 0.2rem 0.6rem; border-radius: 12px; font-size: 0.75rem; font-weight: bold; }
+
+    .container { max-width: 800px; margin: 1.5rem auto; padding: 0 1rem; }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: var(--shadow);
+    }
+
+    label { font-weight: 600; display: block; margin-bottom: 0.4rem; font-size: 0.9rem; color: var(--text); }
+    input, textarea, select {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--bg);
+      color: var(--text);
+      margin-bottom: 1rem;
+      font-size: 0.95rem;
+    }
+
+    .btn-main {
+      background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+      color: white;
+      border: none;
+      padding: 0.85rem 1.2rem;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      width: 100%;
+      font-size: 1rem;
+      transition: transform 0.1s, opacity 0.2s;
+    }
+    .btn-main:active { transform: scale(0.98); }
+
+    nav { display: flex; gap: 8px; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border); }
+    nav button {
+      background: none;
+      border: none;
+      color: var(--text);
+      border-bottom: 3px solid transparent;
+      padding: 0.8rem 1rem;
+      font-weight: 600;
+      opacity: 0.7;
+      cursor: pointer;
+    }
+    nav button.active { border-bottom-color: var(--accent); color: var(--accent); opacity: 1; }
+
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    .flashcard {
+      background: var(--card-bg);
+      border: 2px solid var(--border);
+      border-radius: 16px;
+      min-height: 220px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      text-align: center;
+      font-size: 1.1rem;
+      font-weight: 500;
+      cursor: pointer;
+      margin-bottom: 1rem;
+      box-shadow: var(--shadow);
+    }
+
+    .card-actions { display: flex; gap: 10px; }
+    .btn-know { background: var(--success); color: white; border: none; padding: 0.75rem; border-radius: 10px; flex: 1; font-weight: bold; cursor: pointer; }
+    .btn-review { background: var(--danger); color: white; border: none; padding: 0.75rem; border-radius: 10px; flex: 1; font-weight: bold; cursor: pointer; }
+
+    .option-btn {
+      width: 100%;
+      padding: 0.85rem;
+      margin-bottom: 8px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--bg);
+      color: var(--text);
+      text-align: left;
+      cursor: pointer;
+      font-size: 0.95rem;
+    }
+    .option-btn.correct { background: #dcfce7; color: #166534; border-color: var(--success); font-weight: bold; }
+    .option-btn.incorrect { background: #fee2e2; color: #991b1b; border-color: var(--danger); }
+
+    .loader { display: none; text-align: center; padding: 2rem; font-weight: 600; color: var(--primary); }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="brand">
+      <h1>🩺 Amanda's Study Lab</h1>
+      <span class="badge">1º Semestre Enfermería</span>
+    </div>
+    <button onclick="toggleTheme()" style="background:none; border:1px solid var(--border); padding:0.4rem 0.8rem; border-radius:20px; cursor:pointer; color:var(--text);">🌙/☀️</button>
+  </header>
+
+  <div class="container">
+    <!-- Panel de Configuración -->
+    <div class="card" id="setup-panel">
+      <h3 style="margin-bottom: 0.5rem; color: var(--primary);">¡Hola Amanda! 👋🏻</h3>
+      <p style="font-size: 0.9rem; color: #64748b; margin-bottom: 1.2rem;">Pega el texto de tus diapositivas o tema para generar tu repaso personalizado.</p>
+      
+      <label>Clave de Acceso (API Key):</label>
+      <input type="password" id="api-key" placeholder="AIzaSy...">
+      
+      <label>Texto de la Clase / Presentación / Apuntes:</label>
+      <textarea id="study-text" rows="8" placeholder="Ejemplo: Anatomía del sistema digestivo, constantes vitales, valoración de enfermería..."></textarea>
+
+      <label>Cantidad de Tarjetas y Preguntas:</label>
+      <select id="item-count">
+        <option value="5">5 Tarjetas y 5 Preguntas (Repaso Rápido)</option>
+        <option value="10" selected>10 Tarjetas y 10 Preguntas (Recomendado)</option>
+        <option value="15">15 Tarjetas y 15 Preguntas (Examen Completo)</option>
+        <option value="20">20 Tarjetas y 20 Preguntas (Intensivo)</option>
+      </select>
+
+      <button class="btn-main" onclick="generateMaterial()">✨ Generar Mi Repaso Personalizado</button>
+    </div>
+
+    <div class="loader" id="loader">
+      🧬 Procesando tus apuntes de Enfermería... creando flashcards y preguntas de examen...
+    </div>
+
+    <!-- Panel de Estudio -->
+    <div id="study-panel" style="display: none;">
+      <nav>
+        <button class="nav-btn active" onclick="switchTab('recorrido', this)">📖 Recorrido</button>
+        <button class="nav-btn" onclick="switchTab('tarjetas', this)">🎴 Flashcards</button>
+        <button class="nav-btn" onclick="switchTab('quiz', this)">📝 Quiz</button>
+      </nav>
+
+      <div id="recorrido" class="tab-content active"></div>
+
+      <div id="tarjetas" class="tab-content">
+        <div style="text-align: right; margin-bottom: 0.5rem; font-size: 0.85rem; font-weight: bold; color: var(--primary);" id="card-count"></div>
+        <div class="flashcard" id="flashcard" onclick="flipCard()">
+          <span id="card-text">Haz clic en la tarjeta para ver la respuesta</span>
+        </div>
+        <div class="card-actions">
+          <button class="btn-review" onclick="nextCard(false)">Repasar ❌</button>
+          <button class="btn-know" onclick="nextCard(true)">Me la sé  </button>
+        </div>
+      </div>
+
+      <div id="quiz" class="tab-content">
+        <div class="card">
+          <div style="display:flex; justify-content:space-between; font-weight:bold; margin-bottom:1rem;">
+            <span id="quiz-progress" style="color: var(--primary);">Pregunta 1</span>
+            <span id="quiz-score" style="color: var(--success);">Puntos: 0</span>
+          </div>
+          <div id="quiz-question" style="font-size:1.05rem; font-weight:600; margin-bottom:1rem;"></div>
+          <div id="quiz-options"></div>
+          <div id="quiz-exp" style="display:none; background:rgba(2,132,199,0.1); padding:0.8rem; border-radius:10px; margin-top:1rem; font-size:0.9rem;"></div>
+          <button id="next-quiz-btn" class="btn-main" style="display:none; margin-top:1rem;" onclick="nextQuestion()">Siguiente Pregunta ➔</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let studyData = null;
+    let cardIdx = 0;
+    let isFlipped = false;
+    let quizIdx = 0;
+    let score = 0;
+
+    // Guardar API Key localmente para que Amanda no la escriba siempre
+    window.onload = () => {
+      const savedKey = localStorage.getItem('amanda_api_key');
+      if (savedKey) document.getElementById('api-key').value = savedKey;
+    };
+
+    function toggleTheme() {
+      const isDark = document.body.getAttribute('data-theme') === 'dark';
+      document.body.setAttribute('data-theme', isDark ? 'light' : 'dark');
+    }
+
+    function switchTab(tabId, btn) {
+      document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById(tabId).classList.add('active');
+      btn.classList.add('active');
+    }
+
+    async function generateMaterial() {
+      const apiKey = document.getElementById('api-key').value.trim();
+      const text = document.getElementById('study-text').value.trim();
+      const count = document.getElementById('item-count').value;
+
+      if (!apiKey || !text) {
+        alert("Por favor ingresa la clave de acceso y el tema/texto para estudiar.");
+        return;
+      }
+
+      localStorage.setItem('amanda_api_key', apiKey);
+
+      document.getElementById('setup-panel').style.display = 'none';
+      document.getElementById('loader').style.display = 'block';
+
+      const prompt = `Actúa como un profesor experto en Enfermería. Analiza el siguiente contenido de clase y genera un JSON estricto con ${count} temas de recorrido clave, ${count} flashcards y ${count} preguntas de examen de opción múltiple.
+
+FORMATO JSON ESPERADO:
+{
+  "recorrido": [{"tema": "...", "detalles": "...", "datoClave": "..."}],
+  "flashcards": [{"pregunta": "...", "respuesta": "..."}],
+  "quiz": [{"pregunta": "...", "opciones": ["...", "...", "...", "..."], "correcta": 0, "explicacion": "..."}]
+}
+
+TEXTO DE CLASE:
+${text}`;
+
+      try {
+        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: prompt }] }],
+            generationConfig: { responseMimeType: "application/json" }
+          })
+        });
+
+        const data = await res.json();
+        const jsonText = data.candidates[0].content.parts[0].text;
+        studyData = JSON.parse(jsonText);
+
+        renderRecorrido();
+        initCards();
+        initQuiz();
+
+        document.getElementById('loader').style.display = 'none';
+        document.getElementById('study-panel').style.display = 'block';
+      } catch (err) {
+        alert("Ocurrió un error al procesar el material. Verifica tu clave de API e inténtalo nuevamente.");
+        document.getElementById('loader').style.display = 'none';
+        document.getElementById('setup-panel').style.display = 'block';
+      }
+    }
+
+    function renderRecorrido() {
+      const container = document.getElementById('recorrido');
+      container.innerHTML = studyData.recorrido.map(item => `
+        <div class="card">
+          <h4 style="color:var(--primary); font-size:1.1rem;">${item.tema}</h4>
+          <p style="margin: 0.6rem 0; font-size:0.95rem; line-height:1.4;">${item.detalles}</p>
+          <div style="background:rgba(236, 72, 153, 0.1); border-left: 4px solid var(--accent); padding:0.6rem; font-weight:600; font-size:0.9rem; border-radius:0 8px 8px 0;">
+            💡 Dato Clave de Enfermería: ${item.datoClave}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function initCards() {
+      cardIdx = 0;
+      isFlipped = false;
+      showCard();
+    }
+
+    function showCard() {
+      const card = studyData.flashcards[cardIdx];
+      document.getElementById('card-text').innerText = isFlipped ? card.respuesta : card.pregunta;
+      document.getElementById('card-count').innerText = `Tarjeta ${cardIdx + 1} de ${studyData.flashcards.length}`;
+    }
+
+    function flipCard() {
+      isFlipped = !isFlipped;
+      showCard();
+    }
+
+    function nextCard() {
+      cardIdx = (cardIdx + 1) % studyData.flashcards.length;
+      isFlipped = false;
+      showCard();
+    }
+
+    function initQuiz() {
+      quizIdx = 0;
+      score = 0;
+      showQuestion();
+    }
+
+    function showQuestion() {
+      const q = studyData.quiz[quizIdx];
+      document.getElementById('quiz-progress').innerText = `Pregunta ${quizIdx + 1} de ${studyData.quiz.length}`;
+      document.getElementById('quiz-score').innerText = `Puntos: ${score}`;
+      document.getElementById('quiz-question').innerText = q.pregunta;
+      document.getElementById('quiz-exp').style.display = 'none';
+      document.getElementById('next-quiz-btn').style.display = 'none';
+
+      const options = document.getElementById('quiz-options');
+      options.innerHTML = q.opciones.map((opt, i) => `
+        <button class="option-btn" onclick="selectOption(${i})">${opt}</button>
+      `).join('');
+    }
+
+    function selectOption(idx) {
+      const q = studyData.quiz[quizIdx];
+      const btns = document.querySelectorAll('.option-btn');
+
+      btns.forEach((btn, i) => {
+        btn.disabled = true;
+        if (i === q.correcta) btn.classList.add('correct');
+        else if (i === idx) btn.classList.add('incorrect');
+      });
+
+      if (idx === q.correcta) score++;
+
+      const exp = document.getElementById('quiz-exp');
+      exp.innerText = `💡 Explicación clínica: ${q.explicacion}`;
+      exp.style.display = 'block';
+
+      document.getElementById('next-quiz-btn').style.display = 'block';
+    }
+
+    function nextQuestion() {
+      quizIdx++;
+      if (quizIdx < studyData.quiz.length) {
+        showQuestion();
+      } else {
+        alert(`🎉 Repaso completado, Amanda. Tu puntaje fue: ${score} / ${studyData.quiz.length}`);
+      }
+    }
+  </script>
+</body>
+</html>
