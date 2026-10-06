@@ -161,7 +161,7 @@
       <h1>🌸 Amanda's Nursing Lab</h1>
       <span class="badge">1º Semestre Enfermería 🩺</span>
     </div>
-    <button onclick="toggleTheme()" style="background:var(--primary-soft); border:1px solid var(--border); padding:0.4rem 0.8rem; border-radius:20px; cursor:pointer; color:var(--text); font-weight:bold;">🌙 / ☀️</button>
+    <button onclick="toggleTheme()" style="background:var(--primary-soft); border:1px solid var(--border); padding:0.4rem 0.8rem; border-radius:20px; cursor:pointer; color:var(--text); font-weight:bold;">🌙 / ☀️️</button>
   </header>
 
   <div class="container">
@@ -266,9 +266,9 @@
       document.getElementById('setup-panel').style.display = 'none';
       document.getElementById('loader').style.display = 'block';
 
-      const prompt = `Actúa como un profesor experto en Enfermería. Analiza el siguiente contenido de clase y genera un JSON estricto con ${count} temas de recorrido clave, exactamente ${count} flashcards y exactamente ${count} preguntas de examen de opción múltiple con respuestas únicas y no repetidas.
+      const prompt = `Actúa como un profesor experto en Enfermería. Analiza el siguiente contenido de clase y genera únicamente un objeto JSON valido sin bloques de codigo markdown. Contiene ${count} temas de recorrido clave, exactamente ${count} flashcards y exactamente ${count} preguntas de examen de opción múltiple.
 
-FORMATO JSON ESPERADO:
+El formato JSON debe ser estrictamente:
 {
   "recorrido": [{"tema": "...", "detalles": "...", "datoClave": "..."}],
   "flashcards": [{"pregunta": "...", "respuesta": "..."}],
@@ -278,45 +278,36 @@ FORMATO JSON ESPERADO:
 TEXTO DE CLASE:
 ${text}`;
 
-      const endpoints = [
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`
-      ];
+      try {
+        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: prompt }] }]
+          })
+        });
 
-      let success = false;
-
-      for (let url of endpoints) {
-        try {
-          const res = await fetch(url, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              contents: [{ parts: [{ text: prompt }] }],
-              generationConfig: { responseMimeType: "application/json" }
-            })
-          });
-
-          if (!res.ok) continue;
-
-          const data = await res.json();
-          const jsonText = data.candidates[0].content.parts[0].text;
-          studyData = JSON.parse(jsonText);
-          success = true;
-          break;
-        } catch (err) {
-          console.error("Error en endpoint:", err);
+        if (!res.ok) {
+          throw new Error(`HTTP error ${res.status}`);
         }
-      }
 
-      if (success) {
+        const data = await res.json();
+        let rawText = data.candidates[0].content.parts[0].text;
+        
+        // Limpiar si viene envuelto en markdown ```json ... ```
+        rawText = rawText.replace(/```json/g, '').replace(/```/g, '').trim();
+        
+        studyData = JSON.parse(rawText);
+
         renderRecorrido();
         initCards();
         initQuiz();
 
         document.getElementById('loader').style.display = 'none';
         document.getElementById('study-panel').style.display = 'block';
-      } else {
-        alert("Error de conexión con la API Key. Por favor asegúrate de haberla copiado completa y vuelve a intentarlo.");
+      } catch (err) {
+        console.error("Error al conectar:", err);
+        alert("Error de conexión con la API Key. Por favor verifica que esté pegada correctamente sin espacios e inténtalo de nuevo.");
         document.getElementById('loader').style.display = 'none';
         document.getElementById('setup-panel').style.display = 'block';
       }
@@ -408,4 +399,5 @@ ${text}`;
   </script>
 </body>
 </html>
+
 
