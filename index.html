@@ -145,13 +145,12 @@
   </header>
 
   <div class="container">
-    <!-- Panel de Configuración -->
     <div class="card" id="setup-panel">
       <h3 style="margin-bottom: 0.5rem; color: var(--primary);">¡Hola Amanda! 👋🏻</h3>
       <p style="font-size: 0.9rem; color: #64748b; margin-bottom: 1.2rem;">Pega el texto de tus diapositivas o tema para generar tu repaso personalizado.</p>
       
       <label>Clave de Acceso (API Key):</label>
-      <input type="password" id="api-key" placeholder="AIzaSy...">
+      <input type="password" id="api-key" placeholder="Pega tu API Key aquí...">
       
       <label>Texto de la Clase / Presentación / Apuntes:</label>
       <textarea id="study-text" rows="8" placeholder="Ejemplo: Anatomía del sistema digestivo, constantes vitales, valoración de enfermería..."></textarea>
@@ -171,7 +170,6 @@
       🧬 Procesando tus apuntes de Enfermería... creando flashcards y preguntas de examen...
     </div>
 
-    <!-- Panel de Estudio -->
     <div id="study-panel" style="display: none;">
       <nav>
         <button class="nav-btn active" onclick="switchTab('recorrido', this)">📖 Recorrido</button>
@@ -214,7 +212,6 @@
     let quizIdx = 0;
     let score = 0;
 
-    // Guardar API Key localmente para que Amanda no la escriba siempre
     window.onload = () => {
       const savedKey = localStorage.getItem('amanda_api_key');
       if (savedKey) document.getElementById('api-key').value = savedKey;
@@ -238,7 +235,7 @@
       const count = document.getElementById('item-count').value;
 
       if (!apiKey || !text) {
-        alert("Por favor ingresa la clave de acceso y el tema/texto para estudiar.");
+        alert("Por favor ingresa tu API Key y el texto para estudiar.");
         return;
       }
 
@@ -259,32 +256,46 @@ FORMATO JSON ESPERADO:
 TEXTO DE CLASE:
 ${text}`;
 
-      try {
-        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            contents: [{ parts: [{ text: prompt }] }],
-            generationConfig: { responseMimeType: "application/json" }
-          })
-        });
+      // Probamos con los endpoints compatibles de Gemini
+      const endpoints = [
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`
+      ];
 
-        if (!res.ok) {
-          throw new Error(`HTTP error! status: ${res.status}`);
+      let success = false;
+
+      for (let url of endpoints) {
+        try {
+          const res = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              contents: [{ parts: [{ text: prompt }] }],
+              generationConfig: { responseMimeType: "application/json" }
+            })
+          });
+
+          if (!res.ok) continue;
+
+          const data = await res.json();
+          const jsonText = data.candidates[0].content.parts[0].text;
+          studyData = JSON.parse(jsonText);
+          success = true;
+          break;
+        } catch (err) {
+          console.error("Error en endpoint:", err);
         }
+      }
 
-        const data = await res.json();
-        const jsonText = data.candidates[0].content.parts[0].text;
-        studyData = JSON.parse(jsonText);
-
+      if (success) {
         renderRecorrido();
         initCards();
         initQuiz();
 
         document.getElementById('loader').style.display = 'none';
         document.getElementById('study-panel').style.display = 'block';
-      } catch (err) {
-        alert("Ocurrió un error al procesar el material. Verifica que tu API Key esté copiada correctamente e inténtalo de nuevo.");
+      } else {
+        alert("Error de conexión con la API Key. Por favor asegúrate de haberla copiado completa y vuelve a intentarlo.");
         document.getElementById('loader').style.display = 'none';
         document.getElementById('setup-panel').style.display = 'block';
       }
