@@ -3,35 +3,45 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Amanda's Nursing Lab 🩺</title>
+  <title>Amanda's Nursing Lab 🌸</title>
   <style>
     :root {
-      --bg: #f8fafc;
+      --bg: #fff5f7;
       --card-bg: #ffffff;
-      --text: #1e293b;
-      --primary: #0284c7;
-      --primary-hover: #0369a1;
-      --accent: #ec4899;
-      --success: #10b981;
-      --danger: #ef4444;
-      --border: #e2e8f0;
-      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+      --text: #4a3b4e;
+      --primary: #f472b6;
+      --primary-hover: #ec4899;
+      --primary-soft: #fce7f3;
+      --accent: #f43f5e;
+      --accent-soft: #ffe4e6;
+      --success: #34d399;
+      --success-soft: #d1fae5;
+      --danger: #f87171;
+      --danger-soft: #fee2e2;
+      --border: #fbcfe8;
+      --shadow: 0 4px 12px rgba(244, 114, 182, 0.12);
     }
 
     [data-theme="dark"] {
-      --bg: #0f172a;
-      --card-bg: #1e293b;
-      --text: #f8fafc;
-      --border: #334155;
+      --bg: #1f121b;
+      --card-bg: #2d1a28;
+      --text: #fce7f3;
+      --primary: #f472b6;
+      --primary-hover: #f43f5e;
+      --primary-soft: #4a1d37;
+      --accent: #fb7185;
+      --accent-soft: #501d2d;
+      --border: #4a243a;
+      --shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-    body { background-color: var(--bg); color: var(--text); padding-bottom: 40px; }
+    body { background-color: var(--bg); color: var(--text); padding-bottom: 40px; transition: background-color 0.3s, color 0.3s; }
 
     header {
       background: var(--card-bg);
-      border-bottom: 1px solid var(--border);
-      padding: 1rem 1.5rem;
+      border-bottom: 2px solid var(--border);
+      padding: 1.2rem 1.5rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -39,56 +49,63 @@
     }
 
     .brand { display: flex; align-items: center; gap: 10px; }
-    .brand h1 { font-size: 1.2rem; color: var(--primary); }
-    .badge { background: rgba(236, 72, 153, 0.1); color: var(--accent); padding: 0.2rem 0.6rem; border-radius: 12px; font-size: 0.75rem; font-weight: bold; }
+    .brand h1 { font-size: 1.3rem; color: var(--primary-hover); font-weight: 700; }
+    .badge { background: var(--accent-soft); color: var(--accent); padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.75rem; font-weight: 700; border: 1px solid var(--border); }
 
     .container { max-width: 800px; margin: 1.5rem auto; padding: 0 1rem; }
 
     .card {
       background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 1.5rem;
+      border: 2px solid var(--border);
+      border-radius: 20px;
+      padding: 1.6rem;
       margin-bottom: 1.5rem;
       box-shadow: var(--shadow);
     }
 
-    label { font-weight: 600; display: block; margin-bottom: 0.4rem; font-size: 0.9rem; color: var(--text); }
+    label { font-weight: 700; display: block; margin-bottom: 0.4rem; font-size: 0.9rem; color: var(--text); }
     input, textarea, select {
       width: 100%;
-      padding: 0.75rem;
-      border: 1px solid var(--border);
-      border-radius: 10px;
+      padding: 0.85rem;
+      border: 2px solid var(--border);
+      border-radius: 12px;
       background: var(--bg);
       color: var(--text);
-      margin-bottom: 1rem;
+      margin-bottom: 1.2rem;
       font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    input:focus, textarea:focus, select:focus {
+      border-color: var(--primary);
     }
 
     .btn-main {
-      background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+      background: linear-gradient(135deg, #f472b6, #ec4899);
       color: white;
       border: none;
-      padding: 0.85rem 1.2rem;
-      border-radius: 10px;
-      font-weight: 600;
+      padding: 0.95rem 1.4rem;
+      border-radius: 14px;
+      font-weight: 700;
       cursor: pointer;
       width: 100%;
       font-size: 1rem;
+      box-shadow: 0 4px 10px rgba(236, 72, 153, 0.25);
       transition: transform 0.1s, opacity 0.2s;
     }
     .btn-main:active { transform: scale(0.98); }
 
-    nav { display: flex; gap: 8px; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border); }
+    nav { display: flex; gap: 8px; margin-bottom: 1.5rem; border-bottom: 2px solid var(--border); }
     nav button {
       background: none;
       border: none;
       color: var(--text);
       border-bottom: 3px solid transparent;
-      padding: 0.8rem 1rem;
-      font-weight: 600;
-      opacity: 0.7;
+      padding: 0.8rem 1.2rem;
+      font-weight: 700;
+      opacity: 0.6;
       cursor: pointer;
+      font-size: 0.95rem;
     }
     nav button.active { border-bottom-color: var(--accent); color: var(--accent); opacity: 1; }
 
@@ -98,56 +115,59 @@
     .flashcard {
       background: var(--card-bg);
       border: 2px solid var(--border);
-      border-radius: 16px;
-      min-height: 220px;
+      border-radius: 20px;
+      min-height: 230px;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 1.5rem;
+      padding: 1.8rem;
       text-align: center;
-      font-size: 1.1rem;
-      font-weight: 500;
+      font-size: 1.15rem;
+      font-weight: 600;
       cursor: pointer;
-      margin-bottom: 1rem;
+      margin-bottom: 1.2rem;
       box-shadow: var(--shadow);
+      color: var(--text);
     }
 
-    .card-actions { display: flex; gap: 10px; }
-    .btn-know { background: var(--success); color: white; border: none; padding: 0.75rem; border-radius: 10px; flex: 1; font-weight: bold; cursor: pointer; }
-    .btn-review { background: var(--danger); color: white; border: none; padding: 0.75rem; border-radius: 10px; flex: 1; font-weight: bold; cursor: pointer; }
+    .card-actions { display: flex; gap: 12px; }
+    .btn-know { background: var(--success); color: white; border: none; padding: 0.85rem; border-radius: 12px; flex: 1; font-weight: 700; cursor: pointer; box-shadow: 0 2px 6px rgba(52, 211, 153, 0.3); }
+    .btn-review { background: var(--danger); color: white; border: none; padding: 0.85rem; border-radius: 12px; flex: 1; font-weight: 700; cursor: pointer; box-shadow: 0 2px 6px rgba(248, 113, 113, 0.3); }
 
     .option-btn {
       width: 100%;
-      padding: 0.85rem;
-      margin-bottom: 8px;
-      border: 1px solid var(--border);
-      border-radius: 10px;
+      padding: 0.9rem 1rem;
+      margin-bottom: 10px;
+      border: 2px solid var(--border);
+      border-radius: 12px;
       background: var(--bg);
       color: var(--text);
       text-align: left;
       cursor: pointer;
       font-size: 0.95rem;
+      font-weight: 600;
+      transition: background-color 0.2s, border-color 0.2s;
     }
-    .option-btn.correct { background: #dcfce7; color: #166534; border-color: var(--success); font-weight: bold; }
-    .option-btn.incorrect { background: #fee2e2; color: #991b1b; border-color: var(--danger); }
+    .option-btn.correct { background: var(--success-soft); color: #065f46; border-color: var(--success); font-weight: 700; }
+    .option-btn.incorrect { background: var(--danger-soft); color: #991b1b; border-color: var(--danger); }
 
-    .loader { display: none; text-align: center; padding: 2rem; font-weight: 600; color: var(--primary); }
+    .loader { display: none; text-align: center; padding: 2rem; font-weight: 700; color: var(--primary-hover); }
   </style>
 </head>
 <body>
 
   <header>
     <div class="brand">
-      <h1>🩺 Amanda's Study Lab</h1>
-      <span class="badge">1º Semestre Enfermería</span>
+      <h1>🌸 Amanda's Nursing Lab</h1>
+      <span class="badge">1º Semestre Enfermería 🩺</span>
     </div>
-    <button onclick="toggleTheme()" style="background:none; border:1px solid var(--border); padding:0.4rem 0.8rem; border-radius:20px; cursor:pointer; color:var(--text);">🌙/☀️</button>
+    <button onclick="toggleTheme()" style="background:var(--primary-soft); border:1px solid var(--border); padding:0.4rem 0.8rem; border-radius:20px; cursor:pointer; color:var(--text); font-weight:bold;">🌙 / ☀️</button>
   </header>
 
   <div class="container">
     <div class="card" id="setup-panel">
-      <h3 style="margin-bottom: 0.5rem; color: var(--primary);">¡Hola Amanda! 👋🏻</h3>
-      <p style="font-size: 0.9rem; color: #64748b; margin-bottom: 1.2rem;">Pega el texto de tus diapositivas o tema para generar tu repaso personalizado.</p>
+      <h3 style="margin-bottom: 0.5rem; color: var(--primary-hover);">¡Hola Amanda! 💕✨</h3>
+      <p style="font-size: 0.9rem; color: #885b7b; margin-bottom: 1.2rem;">Pega el texto de tus diapositivas o tema para generar tu repaso personalizado.</p>
       
       <label>Clave de Acceso (API Key):</label>
       <input type="password" id="api-key" placeholder="Pega tu API Key aquí...">
@@ -159,15 +179,17 @@
       <select id="item-count">
         <option value="5">5 Tarjetas y 5 Preguntas (Repaso Rápido)</option>
         <option value="10" selected>10 Tarjetas y 10 Preguntas (Recomendado)</option>
-        <option value="15">15 Tarjetas y 15 Preguntas (Examen Completo)</option>
-        <option value="20">20 Tarjetas y 20 Preguntas (Intensivo)</option>
+        <option value="15">15 Tarjetas y 15 Preguntas</option>
+        <option value="20">20 Tarjetas y 20 Preguntas</option>
+        <option value="30">30 Tarjetas y 30 Preguntas (Examen Extenso)</option>
+        <option value="50">50 Tarjetas y 50 Preguntas (Examen Completo de 50 items)</option>
       </select>
 
       <button class="btn-main" onclick="generateMaterial()">✨ Generar Mi Repaso Personalizado</button>
     </div>
 
     <div class="loader" id="loader">
-      🧬 Procesando tus apuntes de Enfermería... creando flashcards y preguntas de examen...
+      🧬 Creando tu repaso de Enfermería con IA... preparándole las flashcards y preguntas a Amanda... 💖
     </div>
 
     <div id="study-panel" style="display: none;">
@@ -180,9 +202,9 @@
       <div id="recorrido" class="tab-content active"></div>
 
       <div id="tarjetas" class="tab-content">
-        <div style="text-align: right; margin-bottom: 0.5rem; font-size: 0.85rem; font-weight: bold; color: var(--primary);" id="card-count"></div>
+        <div style="text-align: right; margin-bottom: 0.5rem; font-size: 0.85rem; font-weight: bold; color: var(--primary-hover);" id="card-count"></div>
         <div class="flashcard" id="flashcard" onclick="flipCard()">
-          <span id="card-text">Haz clic en la tarjeta para ver la respuesta</span>
+          <span id="card-text">Haz clic en la tarjeta para ver la respuesta 💗</span>
         </div>
         <div class="card-actions">
           <button class="btn-review" onclick="nextCard(false)">Repasar ❌</button>
@@ -193,12 +215,12 @@
       <div id="quiz" class="tab-content">
         <div class="card">
           <div style="display:flex; justify-content:space-between; font-weight:bold; margin-bottom:1rem;">
-            <span id="quiz-progress" style="color: var(--primary);">Pregunta 1</span>
+            <span id="quiz-progress" style="color: var(--primary-hover);">Pregunta 1</span>
             <span id="quiz-score" style="color: var(--success);">Puntos: 0</span>
           </div>
-          <div id="quiz-question" style="font-size:1.05rem; font-weight:600; margin-bottom:1rem;"></div>
+          <div id="quiz-question" style="font-size:1.05rem; font-weight:700; margin-bottom:1.2rem;"></div>
           <div id="quiz-options"></div>
-          <div id="quiz-exp" style="display:none; background:rgba(2,132,199,0.1); padding:0.8rem; border-radius:10px; margin-top:1rem; font-size:0.9rem;"></div>
+          <div id="quiz-exp" style="display:none; background:var(--primary-soft); border:1px solid var(--border); padding:0.9rem; border-radius:12px; margin-top:1rem; font-size:0.9rem;"></div>
           <button id="next-quiz-btn" class="btn-main" style="display:none; margin-top:1rem;" onclick="nextQuestion()">Siguiente Pregunta ➔</button>
         </div>
       </div>
@@ -244,7 +266,7 @@
       document.getElementById('setup-panel').style.display = 'none';
       document.getElementById('loader').style.display = 'block';
 
-      const prompt = `Actúa como un profesor experto en Enfermería. Analiza el siguiente contenido de clase y genera un JSON estricto con ${count} temas de recorrido clave, ${count} flashcards y ${count} preguntas de examen de opción múltiple.
+      const prompt = `Actúa como un profesor experto en Enfermería. Analiza el siguiente contenido de clase y genera un JSON estricto con ${count} temas de recorrido clave, exactamente ${count} flashcards y exactamente ${count} preguntas de examen de opción múltiple con respuestas únicas y no repetidas.
 
 FORMATO JSON ESPERADO:
 {
@@ -256,7 +278,6 @@ FORMATO JSON ESPERADO:
 TEXTO DE CLASE:
 ${text}`;
 
-      // Probamos con los endpoints compatibles de Gemini
       const endpoints = [
         `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
         `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`
@@ -305,9 +326,9 @@ ${text}`;
       const container = document.getElementById('recorrido');
       container.innerHTML = studyData.recorrido.map(item => `
         <div class="card">
-          <h4 style="color:var(--primary); font-size:1.1rem;">${item.tema}</h4>
-          <p style="margin: 0.6rem 0; font-size:0.95rem; line-height:1.4;">${item.detalles}</p>
-          <div style="background:rgba(236, 72, 153, 0.1); border-left: 4px solid var(--accent); padding:0.6rem; font-weight:600; font-size:0.9rem; border-radius:0 8px 8px 0;">
+          <h4 style="color:var(--primary-hover); font-size:1.1rem;">${item.tema}</h4>
+          <p style="margin: 0.6rem 0; font-size:0.95rem; line-height:1.5;">${item.detalles}</p>
+          <div style="background:var(--accent-soft); border-left: 4px solid var(--accent); padding:0.6rem; font-weight:700; font-size:0.9rem; border-radius:0 10px 10px 0; color:var(--text);">
             💡 Dato Clave de Enfermería: ${item.datoClave}
           </div>
         </div>
@@ -381,7 +402,7 @@ ${text}`;
       if (quizIdx < studyData.quiz.length) {
         showQuestion();
       } else {
-        alert(`🎉 Repaso completado, Amanda. Tu puntaje fue: ${score} / ${studyData.quiz.length}`);
+        alert(`🎉 ¡Repaso completado, Amanda! Tu puntaje fue: ${score} / ${studyData.quiz.length}`);
       }
     }
   </script>
